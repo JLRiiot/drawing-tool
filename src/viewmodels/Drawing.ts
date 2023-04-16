@@ -1,40 +1,36 @@
-import { action, computed, makeObservable, observable } from "mobx";
-import { Shape } from "../models/Shape";
+import { makeAutoObservable } from "mobx";
+import { Shape, ShapeType } from "../models/Shape";
 import { Drawing } from "../models/Drawing";
 import { ToolViewModel } from "./tools/Tool";
 import { DrawingService } from "../services/Drawing";
+import { ShapeViewModel } from "./ShapeViewModel";
+import { ShapeViewModelFactory } from "./ViewModelFacotry";
 
 export class DrawingViewModel {
   private _drawing: Drawing;
-  private _currentTool: ToolViewModel | null = null;
+  private _shapesViewModels: ShapeViewModel[] = [];
+  public currentTool: ToolViewModel | null = null;
 
   constructor() {
     this._drawing = DrawingService.loadDrawing();
-
-    makeObservable(this, {
-      currentTool: computed,
-      shapes: computed,
-      addShape: action,
-      removeShape: action,
-      setCurrentTool: action,
-      save: action,
+    this._shapesViewModels = this._drawing.shapes.map((shape) => {
+      const shapeViewModel = ShapeViewModelFactory.createShapeViewModel(shape);
+      return shapeViewModel;
     });
-  }
 
-  get currentTool() {
-    return this._currentTool;
-  }
-
-  set currentTool(tool: ToolViewModel | null) {
-    this._currentTool = tool;
+    makeAutoObservable(this);
   }
 
   get shapes() {
-    return this._drawing.shapes;
+    return [...this._shapesViewModels];
   }
 
   addShape(shape: Shape) {
     this._drawing.addShape(shape);
+    // @FIXME: this will fail if we don't change the ID to be unique
+    this._shapesViewModels.push(
+      ShapeViewModelFactory.createShapeViewModel(shape)
+    );
   }
 
   removeShape(shape: Shape) {
@@ -42,8 +38,7 @@ export class DrawingViewModel {
   }
 
   setCurrentTool(tool: ToolViewModel | null) {
-    console.debug("Setting current tool to", tool);
-    this._currentTool = tool;
+    this.currentTool = tool;
   }
 
   save() {

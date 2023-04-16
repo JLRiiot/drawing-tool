@@ -1,11 +1,10 @@
 import React, { useRef } from "react";
 import * as THREE from "three";
 import { observer } from "mobx-react-lite";
-import { Canvas } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import { DrawingViewModel } from "../../../viewmodels/Drawing";
-import { Shape } from "../../../models/Shape";
 import ShapeFactory from "./shapes/ShapeFactory";
-import { ShapeViewModelFactory } from "../../../viewmodels/ViewModelFacotry";
+import { ShapeViewModel } from "../../../viewmodels/ShapeViewModel";
 
 export interface DrawingViewProps {
   drawingViewModel: DrawingViewModel;
@@ -13,44 +12,76 @@ export interface DrawingViewProps {
 
 const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
   const groupRef = useRef<THREE.Group>(null);
+  const { camera, pointer } = useThree();
+
+  const handleOnPointerMissed = (event: any) => {
+    console.debug("DrawingView.handleOnPointerMissed", event);
+
+    if (drawingViewModel.currentTool && groupRef.current) {
+      drawingViewModel.currentTool.handlePointerDown(
+        event,
+        groupRef.current,
+        camera,
+        pointer
+      );
+    }
+  };
 
   const handlePointerDown = (event: any) => {
+    console.debug("DrawingView.handlePointerDown", event);
     if (drawingViewModel.currentTool && groupRef.current) {
-      drawingViewModel.currentTool.handlePointerDown(event, groupRef.current);
+      drawingViewModel.currentTool.handlePointerDown(
+        event,
+        groupRef.current,
+        camera,
+        pointer
+      );
     }
   };
 
   const handlePointerMove = (event: any) => {
+    console.debug("DrawingView.handlePointerMove", event);
     if (drawingViewModel.currentTool && groupRef.current) {
-      drawingViewModel.currentTool.handlePointerMove(event, groupRef.current);
+      drawingViewModel.currentTool.handlePointerMove(
+        event,
+        groupRef.current,
+        camera,
+        pointer
+      );
     }
   };
 
   const handlePointerUp = (event: any) => {
     if (drawingViewModel.currentTool && groupRef.current) {
-      drawingViewModel.currentTool.handlePointerUp(event, groupRef.current);
+      drawingViewModel.currentTool.handlePointerMove(
+        event,
+        groupRef.current,
+        camera,
+        pointer
+      );
     }
   };
 
-  // @TODO: Create a ShapeViewModel and use it instead of Shape
-  const shapes = drawingViewModel.shapes.map((shape: Shape) => {
-    const ShapeComponent = ShapeFactory.getShapeView(shape.type);
-    const shapeViewModel = ShapeViewModelFactory.createShapeViewModel(shape);
+  const shapes = drawingViewModel.shapes.map(
+    (shapeViewModel: ShapeViewModel) => {
+      console.debug("DrawingView.shape", shapeViewModel);
+      const ShapeComponent = ShapeFactory.getShapeView(shapeViewModel.type);
 
-    return <ShapeComponent key={shape.id} shapeViewModel={shapeViewModel} />;
-  });
+      return (
+        <ShapeComponent key={shapeViewModel.id} viewModel={shapeViewModel} />
+      );
+    }
+  );
 
   return (
-    <div
-      className="w-full h-full"
+    <scene
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
+      onPointerMissed={handleOnPointerMissed}
     >
-      <Canvas>
-        <group ref={groupRef}>{shapes}</group>
-      </Canvas>
-    </div>
+      <group ref={groupRef}>{shapes}</group>
+    </scene>
   );
 });
 

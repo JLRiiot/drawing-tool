@@ -1,22 +1,18 @@
 import "@react-three/fiber";
+import TriangleViewModel from "../../../../viewmodels/Triangle";
 
 export interface TriangleViewProps {
-  points: { x: number; y: number; z: number }[];
+  viewModel: TriangleViewModel;
 }
 
-function TriangleView({ points }: TriangleViewProps) {
-  const positionArray = points.flatMap((point) => [point.x, point.y, point.z]);
-
+function TriangleView({ viewModel }: TriangleViewProps) {
   return (
     <mesh>
-      <bufferGeometry attach="geometry">
-        <bufferAttribute
-          count={positionArray.length / 3}
-          itemSize={3}
-          array={new Float32Array(positionArray)}
-        />
-      </bufferGeometry>
-      <meshBasicMaterial color="hotpink" />
+      <meshBasicMaterial
+        color={[0.86, 0.98, 0.62]}
+        opacity={1}
+      />
+      <shapeGeometry args={[viewModel.toShape()]} />
     </mesh>
   );
 }
