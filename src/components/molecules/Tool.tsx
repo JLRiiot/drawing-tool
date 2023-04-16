@@ -5,12 +5,13 @@ import ToolItem from "../atoms/ToolItem";
 export interface ToolProps {
   icon: IconType;
   toolName: string;
+  onClick?: () => void;
 }
 
-function Tool({ icon, toolName }: ToolProps) {
+function Tool({ icon, toolName, onClick }: ToolProps) {
   return (
     <Tooltip text={toolName}>
-      <ToolItem icon={icon}></ToolItem>
+      <ToolItem icon={icon} onClick={onClick}></ToolItem>
     </Tooltip>
   );
 }
