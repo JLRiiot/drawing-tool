@@ -1,7 +1,8 @@
 import * as THREE from "three";
+import { ShapeType } from "../models/Shape";
 
 export interface ShapeViewModel {
-  get type(): string;
+  get type(): ShapeType;
   get id(): string;
-  toShape(): THREE.Shape;
+  toShape(): THREE.Shape | THREE.Line;
 }

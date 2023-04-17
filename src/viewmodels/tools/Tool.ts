@@ -1,26 +1,27 @@
 import * as THREE from "three";
 import { DrawingViewModel } from "../Drawing";
+import { Size } from "@react-three/fiber";
 
 export abstract class ToolViewModel {
   constructor(protected drawing: DrawingViewModel) {}
 
   abstract handlePointerDown(
     event: MouseEvent | TouchEvent | any,
-    group: THREE.Group,
     camera: THREE.Camera,
-    pointer?: THREE.Vector2
+    size: Size,
+    group: THREE.Group
   ): void;
   abstract handlePointerMove(
     event: MouseEvent | TouchEvent | any,
-    group: THREE.Group,
     camera: THREE.Camera,
-    pointer?: THREE.Vector2
+    size: Size,
+    group: THREE.Group
   ): void;
   abstract handlePointerUp(
     event: MouseEvent | TouchEvent | any,
-    group: THREE.Group,
     camera: THREE.Camera,
-    pointer?: THREE.Vector2
+    size: Size,
+    group: THREE.Group
   ): void;
   abstract toolControl(): JSX.Element | null;
 
@@ -32,20 +33,16 @@ export abstract class ToolViewModel {
 
   protected getWorldCoords(
     mouseCoords: THREE.Vector2,
-    group: THREE.Group
+    camera: THREE.Camera,
+    size: Size
   ): THREE.Vector3 {
-    const raycaster = new THREE.Raycaster();
+    const { x, y } = mouseCoords;
+    const { width, height, top, left } = size;
+    const mouse = new THREE.Vector3();
+    mouse.setX(((x - left) / width) * 2 - 1);
+    mouse.setY(-((y - top) / height) * 2 + 1);
+    mouse.setZ(0);
 
-    if (!group.parent) throw new Error("Group has no parent.");
-
-    raycaster.setFromCamera(mouseCoords, group.parent as THREE.Camera);
-
-    const intersects = raycaster.intersectObject(group, true);
-
-    if (intersects.length > 0) {
-      return intersects[0].point;
-    }
-
-    return new THREE.Vector3();
+    return mouse;
   }
 }

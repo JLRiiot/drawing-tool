@@ -11,7 +11,10 @@ export interface TriangleToolViewProps {
 
 const TriangleToolView = observer(
   ({ drawingViewModel }: TriangleToolViewProps) => {
-    const tool = useMemo(() => new TriangleToolViewModel(drawingViewModel), []);
+    const tool = useMemo(
+      () => new TriangleToolViewModel(drawingViewModel),
+      [drawingViewModel]
+    );
 
     return (
       <Tool

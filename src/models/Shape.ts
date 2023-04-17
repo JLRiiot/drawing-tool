@@ -11,4 +11,5 @@ export enum ShapeType {
   Circle = "circle",
   Polygon = "polygon",
   Draft = "draft",
+  Line = "line",
 }

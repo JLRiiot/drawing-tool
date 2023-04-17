@@ -1,10 +1,12 @@
-import React, { useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import * as THREE from "three";
 import { observer } from "mobx-react-lite";
 import { useThree } from "@react-three/fiber";
 import { DrawingViewModel } from "../../../viewmodels/Drawing";
 import ShapeFactory from "./shapes/ShapeFactory";
 import { ShapeViewModel } from "../../../viewmodels/ShapeViewModel";
+import { Line } from "../../../models/Line";
+import { ShapeViewModelFactory } from "../../../viewmodels/ViewModelFacotry";
 
 export interface DrawingViewProps {
   drawingViewModel: DrawingViewModel;
@@ -12,59 +14,100 @@ export interface DrawingViewProps {
 
 const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
   const groupRef = useRef<THREE.Group>(null);
-  const { camera, pointer } = useThree();
+  const defaultCamera = useThree((state) => state.camera);
+  const events = useThree((state) => state.events);
+  // This is required to attach to the correct mouse events
+  const domElemet = events.connected as HTMLElement | undefined;
+  const line = new Line("1");
 
-  const handleOnPointerMissed = (event: any) => {
-    console.debug("DrawingView.handleOnPointerMissed", event);
+  const handlePointerDown = useCallback(
+    (event: any) => {
+      if (drawingViewModel.currentTool && groupRef.current) {
+        const rect = domElemet!.getBoundingClientRect();
+        const size = rect;
+        console.debug("handlePointerDown", {
+          event,
+          rect: domElemet?.getBoundingClientRect(),
+        });
 
-    if (drawingViewModel.currentTool && groupRef.current) {
-      drawingViewModel.currentTool.handlePointerDown(
-        event,
-        groupRef.current,
-        camera,
-        pointer
-      );
+        const { clientX, clientY } = event;
+        const mouse = new THREE.Vector3();
+        mouse.setX((clientX / size.width) * 2 - 1);
+        mouse.setY(-(clientY / size.height) * 2 + 1);
+        mouse.setZ(0.5);
+
+        const { x, y, z } = mouse;
+
+        line.points.push({ x, y, z });
+        line.points.push({ x: 0, y: 65.4, z: 0 });
+        const lineViewModel = ShapeViewModelFactory.createShapeViewModel(line);
+        drawingViewModel.addShape(lineViewModel);
+
+        // drawingViewModel.currentTool.handlePointerDown(
+        //   event,
+        //   defaultCamera,
+        //   size,
+        //   groupRef.current
+        // );
+      }
+    },
+    [drawingViewModel.currentTool, defaultCamera, domElemet]
+  );
+
+  const handlePointerMove = useCallback(
+    (event: any) => {
+      if (drawingViewModel.currentTool && groupRef.current) {
+        const rect = domElemet!.getBoundingClientRect();
+        const size = rect;
+        drawingViewModel.currentTool.handlePointerMove(
+          event,
+          defaultCamera,
+          size,
+          groupRef.current
+        );
+      }
+    },
+    [drawingViewModel.currentTool, defaultCamera, domElemet]
+  );
+
+  const handlePointerUp = useCallback(
+    (event: any) => {
+      if (drawingViewModel.currentTool && groupRef.current) {
+        const rect = domElemet!.getBoundingClientRect();
+        const size = rect;
+
+        drawingViewModel.removeShape(line);
+
+        // console.debug("handlePointerUp", { event, size, viewPortSize });
+        drawingViewModel.currentTool.handlePointerUp(
+          event,
+          defaultCamera,
+          size,
+          groupRef.current
+        );
+      }
+    },
+    [drawingViewModel.currentTool, defaultCamera, domElemet]
+  );
+
+  useEffect(() => {
+    if (domElemet) {
+      domElemet.addEventListener("pointerdown", handlePointerDown);
+      domElemet.addEventListener("pointermove", handlePointerMove);
+      domElemet.addEventListener("pointerup", handlePointerUp);
     }
-  };
-
-  const handlePointerDown = (event: any) => {
-    console.debug("DrawingView.handlePointerDown", event);
-    if (drawingViewModel.currentTool && groupRef.current) {
-      drawingViewModel.currentTool.handlePointerDown(
-        event,
-        groupRef.current,
-        camera,
-        pointer
-      );
-    }
-  };
-
-  const handlePointerMove = (event: any) => {
-    console.debug("DrawingView.handlePointerMove", event);
-    if (drawingViewModel.currentTool && groupRef.current) {
-      drawingViewModel.currentTool.handlePointerMove(
-        event,
-        groupRef.current,
-        camera,
-        pointer
-      );
-    }
-  };
-
-  const handlePointerUp = (event: any) => {
-    if (drawingViewModel.currentTool && groupRef.current) {
-      drawingViewModel.currentTool.handlePointerMove(
-        event,
-        groupRef.current,
-        camera,
-        pointer
-      );
-    }
-  };
+    return () => {
+      if (domElemet) {
+        domElemet.removeEventListener("pointerdown", handlePointerDown);
+        domElemet.removeEventListener("pointermove", handlePointerMove);
+        domElemet.removeEventListener("pointerup", handlePointerUp);
+      }
+    };
+  }, [domElemet, handlePointerDown, handlePointerMove, handlePointerUp]);
+  console.debug("shapes count", drawingViewModel.shapes.length);
 
   const shapes = drawingViewModel.shapes.map(
     (shapeViewModel: ShapeViewModel) => {
-      console.debug("DrawingView.shape", shapeViewModel);
       const ShapeComponent = ShapeFactory.getShapeView(shapeViewModel.type);
 
       return (
@@ -74,12 +117,7 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
   );
 
   return (
-    <scene
-      onPointerDown={handlePointerDown}
-      onPointerMove={handlePointerMove}
-      onPointerUp={handlePointerUp}
-      onPointerMissed={handleOnPointerMissed}
-    >
+    <scene>
       <group ref={groupRef}>{shapes}</group>
     </scene>
   );

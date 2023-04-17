@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import { ToolViewModel } from "./Tool";
 import { Triangle } from "../../models/Triangle";
+import { Size } from "@react-three/fiber";
 
 export class TriangleToolViewModel extends ToolViewModel {
   // private _draftTriangle: THREE.Group | null = null;
@@ -11,38 +12,51 @@ export class TriangleToolViewModel extends ToolViewModel {
   private readonly TRIANGLE_ID = "draft-triangle";
 
   handlePointerDown(
-    event: any,
-    group: THREE.Group,
+    event: MouseEvent | TouchEvent | any,
     camera: THREE.Camera,
-    pointer: THREE.Vector2
+    size?: Size,
+    _group?: THREE.Group
   ): void {
-    console.debug("TriangleToolViewModel.handlePointerDown", {
-      event,
-      group,
-      camera,
-      pointer,
-    });
+    if (!size) throw new Error("Size is undefined");
 
     const triangleEdgeSize = 10;
-    const trianglePoints = [
-      new THREE.Vector3(pointer.x, pointer.y, 0),
-      new THREE.Vector3(pointer.x + triangleEdgeSize, pointer.y, 0),
-      new THREE.Vector3(
-        pointer.x + triangleEdgeSize / 2,
-        pointer.y + triangleEdgeSize,
-        0
-      ),
-    ];
+    const mousePosition = this.getMouseCoords(event);
+    const worldPosition = this.getWorldCoords(mousePosition, camera, size);
 
-    this._draftTriangle = new Triangle(trianglePoints, this.TRIANGLE_ID);
+    // const triangleP1 = new THREE.Vector3(pointer.x, pointer.y, 0);
+    const triangleP1 = new THREE.Vector3(worldPosition.x, worldPosition.y, 0);
+    const triangleP2 = new THREE.Vector3(
+      worldPosition.x + triangleEdgeSize,
+      worldPosition.y,
+      0
+    );
+    const triangleP3 = new THREE.Vector3(
+      worldPosition.x + triangleEdgeSize / 2,
+      worldPosition.y + triangleEdgeSize,
+      0
+    );
+
+    const trianglePoints = [triangleP1, triangleP2, triangleP3];
+
+    this._draftTriangle = new Triangle(trianglePoints, Date.now().toString());
     this.drawing.addShape(this._draftTriangle);
   }
 
-  handlePointerMove(event: any, group: THREE.Group): void {
+  handlePointerMove(
+    event: MouseEvent | TouchEvent | any,
+    camera: THREE.Camera,
+    size?: Size,
+    _group?: THREE.Group
+  ): void {
     // console.debug("TriangleToolViewModel.handlePointerMove", event, group);
   }
-  handlePointerUp(event: any, group: THREE.Group): void {
-    console.debug("TriangleToolViewModel.handlePointerUp", event, group);
+
+  handlePointerUp(
+    event: MouseEvent | TouchEvent | any,
+    camera: THREE.Camera,
+    size?: Size,
+    group?: THREE.Group
+  ): void {
     this._draftTriangle = null;
 
     if (this._draftTriangle) this.drawing.removeShape(this._draftTriangle);

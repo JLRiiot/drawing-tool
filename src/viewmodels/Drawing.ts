@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { Shape, ShapeType } from "../models/Shape";
+import { Shape } from "../models/Shape";
 import { Drawing } from "../models/Drawing";
 import { ToolViewModel } from "./tools/Tool";
 import { DrawingService } from "../services/Drawing";
@@ -35,6 +35,9 @@ export class DrawingViewModel {
 
   removeShape(shape: Shape) {
     this._drawing.removeShape(shape);
+    this._shapesViewModels.splice(
+      this._shapesViewModels.findIndex((s) => s.id === shape.id)
+    );
   }
 
   setCurrentTool(tool: ToolViewModel | null) {

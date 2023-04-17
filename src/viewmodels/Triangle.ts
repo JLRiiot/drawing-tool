@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 import { Triangle } from "../models/Triangle";
 import { ShapeViewModel } from "./ShapeViewModel";
 import { Shape } from "three";
+import { ShapeType } from "../models/Shape";
 
 class TriangleViewModel implements ShapeViewModel {
   private _triangle: Triangle;
@@ -12,7 +13,7 @@ class TriangleViewModel implements ShapeViewModel {
     makeAutoObservable(this);
   }
 
-  get type(): string {
+  get type(): ShapeType {
     return this._triangle.type;
   }
 
