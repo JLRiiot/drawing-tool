@@ -5,5 +5,7 @@ export interface ShapeViewModel {
   get type(): ShapeType;
   get id(): string;
   get model(): Shape;
+  getColor(): number;
+  setColor(color: number): void;
   toShape(): THREE.Shape | THREE.Line;
 }

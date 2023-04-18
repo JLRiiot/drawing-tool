@@ -6,6 +6,7 @@ import * as THREE from "three";
 
 class TriangleViewModel implements ShapeViewModel {
   private _triangle: Triangle;
+  private _color: number = 0x000000;
 
   constructor(triangle: Triangle) {
     this._triangle = triangle;
@@ -23,6 +24,14 @@ class TriangleViewModel implements ShapeViewModel {
 
   get id(): string {
     return this._triangle.id;
+  }
+
+  getColor(): number {
+    return this._color;
+  }
+
+  setColor(color: number): void {
+    this._color = color;
   }
 
   toShape(): THREE.Shape {

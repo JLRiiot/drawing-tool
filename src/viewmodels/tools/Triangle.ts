@@ -36,22 +36,21 @@ export class TriangleToolViewModel extends ToolViewModel {
     centroid: THREE.Vector3,
     sideLength = 2
   ) {
-    const height = (Math.sqrt(3) * sideLength) / 2;
     const halfBase = sideLength / 2;
 
     const pointA = new THREE.Vector3(
-      centroid.x,
-      centroid.y + height / 3,
+      centroid.x + halfBase,
+      centroid.y + halfBase,
       centroid.z
     );
     const pointB = new THREE.Vector3(
       centroid.x - halfBase,
-      centroid.y - height / 3,
+      centroid.y,
       centroid.z
     );
     const pointC = new THREE.Vector3(
       centroid.x + halfBase,
-      centroid.y - height / 3,
+      centroid.y - halfBase,
       centroid.z
     );
 
