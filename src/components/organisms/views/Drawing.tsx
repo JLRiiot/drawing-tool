@@ -5,106 +5,111 @@ import { useThree } from "@react-three/fiber";
 import { DrawingViewModel } from "../../../viewmodels/Drawing";
 import ShapeFactory from "./shapes/ShapeFactory";
 import { ShapeViewModel } from "../../../viewmodels/ShapeViewModel";
-import { Line } from "../../../models/Line";
-import { ShapeViewModelFactory } from "../../../viewmodels/ViewModelFacotry";
 
 export interface DrawingViewProps {
   drawingViewModel: DrawingViewModel;
 }
+
+const domCoordsToCameraCoords = (
+  domX: number,
+  domY: number,
+  domElemebt: HTMLElement,
+  camera: THREE.Camera
+) => {
+  const domRect = domElemebt.getBoundingClientRect();
+
+  if (!domRect)
+    throw new Error(
+      "Could not get bounding rect, when calculating mouse position"
+    );
+
+  const mouseX = domX - domRect?.left;
+  const mouseY = domY - domRect?.top;
+  const ndcX = (mouseX / domRect?.width) * 2 - 1;
+  const ndcY = -(mouseY / domRect?.height) * 2 + 1;
+
+  const mouse = new THREE.Vector3(ndcX, ndcY, 0.5);
+  mouse.unproject(camera);
+  mouse.setZ(0.5);
+
+  return mouse;
+};
 
 const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const defaultCamera = useThree((state) => state.camera);
   const events = useThree((state) => state.events);
   // This is required to attach to the correct mouse events
-  const domElemet = events.connected as HTMLElement | undefined;
-  const line = new Line("1");
+  const domElement = events.connected as HTMLElement | undefined;
 
   const handlePointerDown = useCallback(
     (event: any) => {
-      if (drawingViewModel.currentTool && groupRef.current) {
-        const rect = domElemet!.getBoundingClientRect();
-        const size = rect;
-        console.debug("handlePointerDown", {
-          event,
-          rect: domElemet?.getBoundingClientRect(),
-        });
+      event.preventDefault();
 
-        const { clientX, clientY } = event;
-        const mouse = new THREE.Vector3();
-        mouse.setX((clientX / size.width) * 2 - 1);
-        mouse.setY(-(clientY / size.height) * 2 + 1);
-        mouse.setZ(0.5);
+      if (groupRef.current !== null && drawingViewModel.currentTool) {
+        const mouse = domCoordsToCameraCoords(
+          event.clientX,
+          event.clientY,
+          domElement!,
+          defaultCamera
+        );
 
-        const { x, y, z } = mouse;
-
-        line.points.push({ x, y, z });
-        line.points.push({ x: 0, y: 65.4, z: 0 });
-        const lineViewModel = ShapeViewModelFactory.createShapeViewModel(line);
-        drawingViewModel.addShape(lineViewModel);
-
-        // drawingViewModel.currentTool.handlePointerDown(
-        //   event,
-        //   defaultCamera,
-        //   size,
-        //   groupRef.current
-        // );
+        drawingViewModel.currentTool.handlePointerDown(mouse, groupRef.current);
       }
     },
-    [drawingViewModel.currentTool, defaultCamera, domElemet]
+    [domElement, defaultCamera, drawingViewModel, groupRef]
   );
 
   const handlePointerMove = useCallback(
     (event: any) => {
-      if (drawingViewModel.currentTool && groupRef.current) {
-        const rect = domElemet!.getBoundingClientRect();
-        const size = rect;
-        drawingViewModel.currentTool.handlePointerMove(
-          event,
-          defaultCamera,
-          size,
-          groupRef.current
+      event.preventDefault();
+
+      if (groupRef.current !== null && drawingViewModel.currentTool) {
+        const mouse = domCoordsToCameraCoords(
+          event.clientX,
+          event.clientY,
+          domElement!,
+          defaultCamera
         );
+
+        drawingViewModel.currentTool.handlePointerMove(mouse, groupRef.current);
       }
     },
-    [drawingViewModel.currentTool, defaultCamera, domElemet]
+    [domElement, defaultCamera, drawingViewModel, groupRef]
   );
 
   const handlePointerUp = useCallback(
     (event: any) => {
-      if (drawingViewModel.currentTool && groupRef.current) {
-        const rect = domElemet!.getBoundingClientRect();
-        const size = rect;
+      event.preventDefault();
 
-        drawingViewModel.removeShape(line);
-
-        // console.debug("handlePointerUp", { event, size, viewPortSize });
-        drawingViewModel.currentTool.handlePointerUp(
-          event,
-          defaultCamera,
-          size,
-          groupRef.current
+      if (groupRef.current !== null && drawingViewModel.currentTool) {
+        const mouse = domCoordsToCameraCoords(
+          event.clientX,
+          event.clientY,
+          domElement!,
+          defaultCamera
         );
+
+        drawingViewModel.currentTool.handlePointerUp(mouse, groupRef.current);
       }
     },
-    [drawingViewModel.currentTool, defaultCamera, domElemet]
+    [domElement, defaultCamera, drawingViewModel, groupRef]
   );
 
   useEffect(() => {
-    if (domElemet) {
-      domElemet.addEventListener("pointerdown", handlePointerDown);
-      domElemet.addEventListener("pointermove", handlePointerMove);
-      domElemet.addEventListener("pointerup", handlePointerUp);
+    if (domElement) {
+      domElement.addEventListener("pointerdown", handlePointerDown);
+      domElement.addEventListener("pointermove", handlePointerMove);
+      domElement.addEventListener("pointerup", handlePointerUp);
     }
     return () => {
-      if (domElemet) {
-        domElemet.removeEventListener("pointerdown", handlePointerDown);
-        domElemet.removeEventListener("pointermove", handlePointerMove);
-        domElemet.removeEventListener("pointerup", handlePointerUp);
+      if (domElement) {
+        domElement.removeEventListener("pointerdown", handlePointerDown);
+        domElement.removeEventListener("pointermove", handlePointerMove);
+        domElement.removeEventListener("pointerup", handlePointerUp);
       }
     };
-  }, [domElemet, handlePointerDown, handlePointerMove, handlePointerUp]);
-  console.debug("shapes count", drawingViewModel.shapes.length);
+  }, [domElement, handlePointerDown, handlePointerMove, handlePointerUp]);
 
   const shapes = drawingViewModel.shapes.map(
     (shapeViewModel: ShapeViewModel) => {

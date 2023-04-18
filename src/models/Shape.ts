@@ -1,7 +1,8 @@
 // @TODO: Shape might not be the best abstraction.
 export interface Shape {
-  id: string;
-  type: ShapeType;
+  get id(): string;
+  set id(id: string);
+  get type(): ShapeType;
 }
 
 export enum ShapeType {

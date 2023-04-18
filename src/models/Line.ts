@@ -7,8 +7,11 @@ export class Line implements Shape {
   private _points: Point[] = [];
   private _thickness: number = 1;
 
-  constructor(id: string) {
+  constructor(id: string, points: Point[]) {
+    if (points.length < 2) throw new Error("Line must have at least 2 points");
+
     this.id = id;
+    this._points = points;
   }
 
   get points(): Point[] {

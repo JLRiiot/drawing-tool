@@ -3,8 +3,18 @@ import { Shape, ShapeType } from "./Shape";
 
 export class Triangle implements Shape {
   private _points: Point[];
-  type = ShapeType.Triangle;
-  id: string;
+  private _id: string = "";
+
+  get id() {
+    return this._id;
+  }
+  set id(id: string) {
+    this._id = id;
+  }
+
+  get type() {
+    return ShapeType.Triangle;
+  }
 
   constructor(points: Point[], id: string) {
     if (points.length !== 3) {

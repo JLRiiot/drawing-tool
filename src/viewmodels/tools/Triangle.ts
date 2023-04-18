@@ -1,68 +1,60 @@
 import * as THREE from "three";
 import { ToolViewModel } from "./Tool";
 import { Triangle } from "../../models/Triangle";
-import { Size } from "@react-three/fiber";
+import TriangleViewModel from "../Triangle";
 
 export class TriangleToolViewModel extends ToolViewModel {
-  // private _draftTriangle: THREE.Group | null = null;
-  // private _startCorner: THREE.Vector3 | null = null;
-  // private _endCorner: THREE.Vector3 | null = null;
-  private _center: THREE.Vector3 | null = null;
-  private _draftTriangle: Triangle | null = null;
-  private readonly TRIANGLE_ID = "draft-triangle";
+  private _triangleViewModel: TriangleViewModel | null = null;
 
-  handlePointerDown(
-    event: MouseEvent | TouchEvent | any,
-    camera: THREE.Camera,
-    size?: Size,
-    _group?: THREE.Group
-  ): void {
-    if (!size) throw new Error("Size is undefined");
-
+  handlePointerDown(pointer: THREE.Vector3, group: THREE.Group): void {
     const triangleEdgeSize = 10;
-    const mousePosition = this.getMouseCoords(event);
-    const worldPosition = this.getWorldCoords(mousePosition, camera, size);
 
-    // const triangleP1 = new THREE.Vector3(pointer.x, pointer.y, 0);
-    const triangleP1 = new THREE.Vector3(worldPosition.x, worldPosition.y, 0);
-    const triangleP2 = new THREE.Vector3(
-      worldPosition.x + triangleEdgeSize,
-      worldPosition.y,
-      0
-    );
-    const triangleP3 = new THREE.Vector3(
-      worldPosition.x + triangleEdgeSize / 2,
-      worldPosition.y + triangleEdgeSize,
-      0
+    const triangleVertices = this.createEquilateralTrianglePoints(
+      pointer,
+      triangleEdgeSize
     );
 
-    const trianglePoints = [triangleP1, triangleP2, triangleP3];
+    const triangle = new Triangle(triangleVertices, Date.now().toString());
+    this._triangleViewModel = new TriangleViewModel(triangle);
 
-    this._draftTriangle = new Triangle(trianglePoints, Date.now().toString());
-    this.drawing.addShape(this._draftTriangle);
+    this.drawing.addShape(this._triangleViewModel);
   }
 
-  handlePointerMove(
-    event: MouseEvent | TouchEvent | any,
-    camera: THREE.Camera,
-    size?: Size,
-    _group?: THREE.Group
-  ): void {
+  handlePointerMove(pointer: THREE.Vector3, group: THREE.Group): void {
     // console.debug("TriangleToolViewModel.handlePointerMove", event, group);
   }
 
-  handlePointerUp(
-    event: MouseEvent | TouchEvent | any,
-    camera: THREE.Camera,
-    size?: Size,
-    group?: THREE.Group
-  ): void {
-    this._draftTriangle = null;
-
-    if (this._draftTriangle) this.drawing.removeShape(this._draftTriangle);
+  handlePointerUp(pointer: THREE.Vector3, group: THREE.Group): void {
+    this._triangleViewModel = null;
   }
 
   toolControl(): JSX.Element | null {
     return null;
+  }
+
+  private createEquilateralTrianglePoints(
+    centroid: THREE.Vector3,
+    sideLength = 2
+  ) {
+    const height = (Math.sqrt(3) * sideLength) / 2;
+    const halfBase = sideLength / 2;
+
+    const pointA = new THREE.Vector3(
+      centroid.x,
+      centroid.y + height / 3,
+      centroid.z
+    );
+    const pointB = new THREE.Vector3(
+      centroid.x - halfBase,
+      centroid.y - height / 3,
+      centroid.z
+    );
+    const pointC = new THREE.Vector3(
+      centroid.x + halfBase,
+      centroid.y - height / 3,
+      centroid.z
+    );
+
+    return [pointA, pointB, pointC];
   }
 }

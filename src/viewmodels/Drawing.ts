@@ -9,6 +9,7 @@ import { ShapeViewModelFactory } from "./ViewModelFacotry";
 export class DrawingViewModel {
   private _drawing: Drawing;
   private _shapesViewModels: ShapeViewModel[] = [];
+  private _drawingStrocke: number = 0;
   public currentTool: ToolViewModel | null = null;
 
   constructor() {
@@ -25,12 +26,11 @@ export class DrawingViewModel {
     return [...this._shapesViewModels];
   }
 
-  addShape(shape: Shape) {
-    this._drawing.addShape(shape);
+  addShape(shape: ShapeViewModel) {
+    this._drawing.addShape(shape.model);
+
     // @FIXME: this will fail if we don't change the ID to be unique
-    this._shapesViewModels.push(
-      ShapeViewModelFactory.createShapeViewModel(shape)
-    );
+    this._shapesViewModels.push(shape);
   }
 
   removeShape(shape: Shape) {
@@ -42,6 +42,18 @@ export class DrawingViewModel {
 
   setCurrentTool(tool: ToolViewModel | null) {
     this.currentTool = tool;
+  }
+
+  startDrawing() {
+    this._drawingStrocke++;
+  }
+
+  endDrawing() {
+    this._drawingStrocke = 0;
+  }
+
+  continueDrawing() {
+    this._drawingStrocke++;
   }
 
   save() {

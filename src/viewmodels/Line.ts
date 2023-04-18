@@ -1,33 +1,66 @@
 import * as THREE from "three";
 import { ShapeViewModel } from "./ShapeViewModel";
 import { Line } from "../models/Line";
-import { ShapeType } from "../models/Shape";
+import { Shape, ShapeType } from "../models/Shape";
 import { makeAutoObservable } from "mobx";
 
 class LineViewModel implements ShapeViewModel {
   private _line: Line;
+  private _start: THREE.Vector3;
+  private _end: THREE.Vector3;
+  private _color: number = 0x000000;
 
   constructor(line: Line) {
     this._line = line;
 
+    this._start = new THREE.Vector3(
+      line.points[0].x,
+      line.points[0].y,
+      line.points[0].z
+    );
+    this._end = new THREE.Vector3(
+      line.points[1].x,
+      line.points[1].y,
+      line.points[1].z
+    );
+
     makeAutoObservable(this);
+  }
+
+  get model(): Shape {
+    return this._line;
   }
 
   get type(): ShapeType {
     return this._line.type;
   }
+
   get id(): string {
     return this._line.id;
   }
 
-  get points(): THREE.Vector3[] {
-    const points: THREE.Vector3[] = [];
+  getStart(): THREE.Vector3 {
+    return this._start;
+  }
 
-    for (const point of this._line.points) {
-      points.push(new THREE.Vector3(point.x, point.y, point.z));
-    }
+  setStart(start: THREE.Vector3) {
+    this._start.set(start.x, start.y, start.z);
+  }
 
-    return points;
+  getEnd(): THREE.Vector3 {
+    return this._end;
+  }
+
+  setEnd(end: THREE.Vector3) {
+    this._end.set(end.x, end.y, end.z);
+  }
+
+  setColor(color: number): void {
+    this._color = color;
+  }
+
+  getColor(): number {
+    return this._color;
   }
 
   toShape(): THREE.Line {

@@ -19,7 +19,7 @@ const LineToolView = observer(({ drawingViewModel }: LineToolViewProps) => {
     <Tool
       selected={drawingViewModel.currentTool === tool}
       icon={BsPencil}
-      toolName="Triangle"
+      toolName="Line"
       onClick={() => drawingViewModel.setCurrentTool(tool)}
     />
   );

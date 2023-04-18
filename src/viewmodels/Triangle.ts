@@ -1,8 +1,8 @@
 import { makeAutoObservable } from "mobx";
 import { Triangle } from "../models/Triangle";
 import { ShapeViewModel } from "./ShapeViewModel";
-import { Shape } from "three";
-import { ShapeType } from "../models/Shape";
+import { Shape, ShapeType } from "../models/Shape";
+import * as THREE from "three";
 
 class TriangleViewModel implements ShapeViewModel {
   private _triangle: Triangle;
@@ -11,6 +11,10 @@ class TriangleViewModel implements ShapeViewModel {
     this._triangle = triangle;
 
     makeAutoObservable(this);
+  }
+
+  get model(): Shape {
+    return this._triangle;
   }
 
   get type(): ShapeType {
@@ -22,7 +26,7 @@ class TriangleViewModel implements ShapeViewModel {
   }
 
   toShape(): THREE.Shape {
-    const shape = new Shape();
+    const shape = new THREE.Shape();
     shape.moveTo(this.points[0].x, this.points[0].y);
     shape.lineTo(this.points[1].x, this.points[1].y);
     shape.lineTo(this.points[2].x, this.points[2].y);
