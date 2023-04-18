@@ -4,12 +4,13 @@ import {
   AiOutlineDrag,
   AiOutlineCloseCircle,
 } from "react-icons/ai";
-import { BsSquare, BsHexagon } from "react-icons/bs";
+import { BsHexagon } from "react-icons/bs";
 import VerticalToolBar from "../../atoms/VerticalToolbar";
 import Tool from "../../molecules/Tool";
 import TriangleToolView from "./tools/Triangle";
 import { DrawingViewModel } from "../../../viewmodels/Drawing";
 import LineToolView from "./tools/Line";
+import SquareToolView from "./tools/Square";
 
 export interface DrawingToolsProps {
   drawingViewModel: DrawingViewModel;
@@ -24,7 +25,7 @@ function DrawingTools({ drawingViewModel }: DrawingToolsProps) {
       {/* <Tool icon={BsTriangle} toolName="Triangle" /> */}
       <LineToolView drawingViewModel={drawingViewModel}></LineToolView>
       <TriangleToolView drawingViewModel={drawingViewModel}></TriangleToolView>
-      <Tool icon={BsSquare} toolName="Square" />
+      <SquareToolView drawingViewModel={drawingViewModel}></SquareToolView>
       <Tool icon={BsHexagon} toolName="Hexagon" />
     </VerticalToolBar>
   );
