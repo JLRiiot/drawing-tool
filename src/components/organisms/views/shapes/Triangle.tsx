@@ -9,7 +9,7 @@ function TriangleView({ viewModel }: TriangleViewProps) {
   return (
     <mesh>
       <meshBasicMaterial
-        color={viewModel.getColor()}
+        color={viewModel.color}
         opacity={0.8}
         transparent={true}
       />

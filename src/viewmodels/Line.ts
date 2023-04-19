@@ -2,29 +2,43 @@ import * as THREE from "three";
 import { ShapeViewModel } from "./ShapeViewModel";
 import { Line } from "../models/Line";
 import { Shape, ShapeType } from "../models/Shape";
-import { makeAutoObservable } from "mobx";
+import { action, makeObservable, observable, override } from "mobx";
 
-class LineViewModel implements ShapeViewModel {
+class LineViewModel extends ShapeViewModel {
   private _line: Line;
-  private _start: THREE.Vector3;
-  private _end: THREE.Vector3;
-  private _color: number = 0x000000;
+  public start: THREE.Vector3;
+  public end: THREE.Vector3;
 
   constructor(line: Line) {
+    super();
+
     this._line = line;
 
-    this._start = new THREE.Vector3(
+    makeObservable(this, {
+      // Inherited properties
+      type: override,
+      id: override,
+      model: override,
+      toShape: override,
+      // Own properties
+      setEnd: action,
+      setStart: action,
+      start: observable,
+      end: observable,
+    });
+
+    this.setColor(0xcc9048);
+
+    this.start = new THREE.Vector3(
       line.points[0].x,
       line.points[0].y,
       line.points[0].z
     );
-    this._end = new THREE.Vector3(
+    this.end = new THREE.Vector3(
       line.points[1].x,
       line.points[1].y,
       line.points[1].z
     );
-
-    makeAutoObservable(this);
   }
 
   get model(): Shape {
@@ -39,28 +53,18 @@ class LineViewModel implements ShapeViewModel {
     return this._line.id;
   }
 
-  getStart(): THREE.Vector3 {
-    return this._start;
-  }
-
   setStart(start: THREE.Vector3) {
-    this._start.set(start.x, start.y, start.z);
-  }
-
-  getEnd(): THREE.Vector3 {
-    return this._end;
+    this.start = new THREE.Vector3(start.x, start.y, start.z);
+    this._line.points[0].x = start.x;
+    this._line.points[0].y = start.y;
+    this._line.points[0].z = start.z;
   }
 
   setEnd(end: THREE.Vector3) {
-    this._end.set(end.x, end.y, end.z);
-  }
-
-  setColor(color: number): void {
-    this._color = color;
-  }
-
-  getColor(): number {
-    return this._color;
+    this.end = new THREE.Vector3(end.x, end.y, end.z);
+    this._line.points[1].x = end.x;
+    this._line.points[1].y = end.y;
+    this._line.points[1].z = end.z;
   }
 
   toShape(): THREE.Line {

@@ -13,9 +13,9 @@ const LineView = observer(({ viewModel }: LineViewProps) => {
     throw new Error("viewModel is not a LineViewModel");
   }
 
-  const points = [viewModel.getStart(), viewModel.getEnd()];
+  const points = [viewModel.start, viewModel.end];
   const material = new THREE.LineBasicMaterial({
-    color: viewModel.getColor(),
+    color: viewModel.color,
     linewidth: 5,
   });
   const geometry = new THREE.BufferGeometry().setFromPoints(points);

@@ -1,11 +1,34 @@
 import * as THREE from "three";
 import { Shape, ShapeType } from "../models/Shape";
+import { action, computed, makeObservable, observable } from "mobx";
 
-export interface ShapeViewModel {
-  get type(): ShapeType;
-  get id(): string;
-  get model(): Shape;
-  getColor(): number;
-  setColor(color: number): void;
-  toShape(): THREE.Shape | THREE.Line;
+export abstract class ShapeViewModel {
+  protected _selected: boolean = false;
+  public color: number = 0xd8d8d8;
+
+  constructor() {
+    makeObservable(this, {
+      type: computed,
+      id: computed,
+      model: computed,
+      color: observable,
+      setColor: action.bound,
+      toShape: observable,
+      toggleSelected: action.bound,
+    });
+  }
+
+  abstract get type(): ShapeType;
+  abstract get id(): string;
+  abstract get model(): Shape;
+  // @FIXME: abstraction leak, we will have to modify to support Circles for example :/
+  abstract toShape(): THREE.Shape | THREE.Line;
+
+  toggleSelected(): void {
+    this._selected = !this._selected;
+  }
+
+  setColor(color: number): void {
+    this.color = color;
+  }
 }

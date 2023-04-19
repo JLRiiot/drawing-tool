@@ -1,17 +1,28 @@
-import { makeAutoObservable } from "mobx";
+import { action, computed, makeObservable, observable, override } from "mobx";
 import * as THREE from "three";
 import { ShapeViewModel } from "./ShapeViewModel";
 import { Shape, ShapeType } from "../models/Shape";
 import { Hexagon } from "../models/Hexagon";
 
-class HexagonViewModel implements ShapeViewModel {
+class HexagonViewModel extends ShapeViewModel {
   private _hexagon: Hexagon;
-  private _color: number = 0x904848;
 
-  constructor(triangle: Hexagon) {
-    this._hexagon = triangle;
+  constructor(hexagon: Hexagon) {
+    super();
+    this._hexagon = hexagon;
 
-    makeAutoObservable(this);
+    makeObservable(this, {
+      // Inherited properties
+      type: override,
+      id: override,
+      model: override,
+      toShape: override,
+      // Own properties
+      getPoints: observable,
+      setPoints: action.bound,
+    });
+
+    this.setColor(0x904848);
   }
 
   get model(): Shape {
@@ -26,28 +37,20 @@ class HexagonViewModel implements ShapeViewModel {
     return this._hexagon.id;
   }
 
-  getColor(): number {
-    return this._color;
-  }
-
-  setColor(color: number): void {
-    this._color = color;
-  }
-
   toShape(): THREE.Shape {
     const shape = new THREE.Shape();
-    shape.moveTo(this.points[0].x, this.points[0].y);
-    shape.lineTo(this.points[1].x, this.points[1].y);
-    shape.lineTo(this.points[2].x, this.points[2].y);
-    shape.lineTo(this.points[3].x, this.points[3].y);
-    shape.lineTo(this.points[4].x, this.points[4].y);
-    shape.lineTo(this.points[5].x, this.points[5].y);
-    shape.lineTo(this.points[0].x, this.points[0].y);
+    shape.moveTo(this.getPoints()[0].x, this.getPoints()[0].y);
+    shape.lineTo(this.getPoints()[1].x, this.getPoints()[1].y);
+    shape.lineTo(this.getPoints()[2].x, this.getPoints()[2].y);
+    shape.lineTo(this.getPoints()[3].x, this.getPoints()[3].y);
+    shape.lineTo(this.getPoints()[4].x, this.getPoints()[4].y);
+    shape.lineTo(this.getPoints()[5].x, this.getPoints()[5].y);
+    shape.lineTo(this.getPoints()[0].x, this.getPoints()[0].y);
 
     return shape;
   }
 
-  get points() {
+  getPoints() {
     return this._hexagon.points;
   }
 

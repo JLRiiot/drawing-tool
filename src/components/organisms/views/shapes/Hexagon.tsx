@@ -9,7 +9,7 @@ function HexagonView({ viewModel }: HexagonViewProps) {
   return (
     <mesh>
       <meshBasicMaterial
-        color={viewModel.getColor()}
+        color={viewModel.color}
         opacity={0.8}
         transparent={true}
       />

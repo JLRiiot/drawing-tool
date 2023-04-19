@@ -11,7 +11,7 @@ export class LineToolViewModel extends ToolViewModel {
 
     const line = new Line(Date.now().toString(), [
       { x, y, z },
-      { x, y: y, z },
+      { x, y, z },
     ]);
 
     this._line = new LineViewModel(line);
@@ -25,13 +25,8 @@ export class LineToolViewModel extends ToolViewModel {
 
     const { x, y, z } = pointer;
 
-    // @FIXME: Mobx reactivity is not working here
     this._line.setEnd(new THREE.Vector3(x, y, z));
     this.drawing.continueDrawing();
-
-    // @FIXME: hack to force re-render
-    const randomColor = Math.floor(Math.random() * 16777215);
-    this._line.setColor(randomColor);
   }
 
   handlePointerUp(pointer: THREE.Vector3, group: THREE.Group): void {

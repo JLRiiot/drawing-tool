@@ -1,17 +1,28 @@
-import { makeAutoObservable } from "mobx";
+import { action, makeObservable, observable, override } from "mobx";
 import * as THREE from "three";
 import { ShapeViewModel } from "./ShapeViewModel";
 import { Shape, ShapeType } from "../models/Shape";
 import { Square } from "../models/Square";
 
-class SquareViewModel implements ShapeViewModel {
+class SquareViewModel extends ShapeViewModel {
   private _square: Square;
-  private _color: number = 0x484890;
 
   constructor(triangle: Square) {
+    super();
     this._square = triangle;
 
-    makeAutoObservable(this);
+    makeObservable(this, {
+      // Inherited properties
+      type: override,
+      id: override,
+      model: override,
+      toShape: override,
+      // Own properties
+      getPoints: observable,
+      setPoints: action.bound,
+    });
+
+    this.setColor(0x484890);
   }
 
   get model(): Shape {
@@ -26,26 +37,18 @@ class SquareViewModel implements ShapeViewModel {
     return this._square.id;
   }
 
-  getColor(): number {
-    return this._color;
-  }
-
-  setColor(color: number): void {
-    this._color = color;
-  }
-
   toShape(): THREE.Shape {
     const shape = new THREE.Shape();
-    shape.moveTo(this.points[0].x, this.points[0].y);
-    shape.lineTo(this.points[1].x, this.points[1].y);
-    shape.lineTo(this.points[2].x, this.points[2].y);
-    shape.lineTo(this.points[3].x, this.points[3].y);
-    shape.lineTo(this.points[0].x, this.points[0].y);
+    shape.moveTo(this.getPoints()[0].x, this.getPoints()[0].y);
+    shape.lineTo(this.getPoints()[1].x, this.getPoints()[1].y);
+    shape.lineTo(this.getPoints()[2].x, this.getPoints()[2].y);
+    shape.lineTo(this.getPoints()[3].x, this.getPoints()[3].y);
+    shape.lineTo(this.getPoints()[0].x, this.getPoints()[0].y);
 
     return shape;
   }
 
-  get points() {
+  getPoints() {
     return this._square.points;
   }
 
