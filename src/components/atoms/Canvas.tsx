@@ -15,8 +15,8 @@ function Canvas({ children }: CanvasProps) {
         far: 10000,
       }}
     >
-      <ambientLight intensity={0.1} />
-      <color attach="background" args={[1, 1, 1]} />
+      <ambientLight intensity={1} />
+      <color attach="background" args={[0.01, 0.01, 0.01]} />
       {children}
     </ThreeCanvas>
   );

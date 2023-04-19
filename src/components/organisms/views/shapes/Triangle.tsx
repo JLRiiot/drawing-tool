@@ -8,7 +8,11 @@ export interface TriangleViewProps {
 function TriangleView({ viewModel }: TriangleViewProps) {
   return (
     <mesh>
-      <meshBasicMaterial color={viewModel.getColor()} opacity={1} />
+      <meshBasicMaterial
+        color={viewModel.getColor()}
+        opacity={0.8}
+        transparent={true}
+      />
       <shapeGeometry args={[viewModel.toShape()]} />
     </mesh>
   );

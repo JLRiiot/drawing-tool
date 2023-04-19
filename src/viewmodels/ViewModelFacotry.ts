@@ -5,6 +5,8 @@ import LineViewModel from "./Line";
 import TriangleViewModel from "./Triangle";
 import { Square } from "../models/Square";
 import SquareViewModel from "./Square";
+import { Hexagon } from "../models/Hexagon";
+import HexagonViewModel from "./Hexagon";
 
 export class ShapeViewModelFactory {
   static createShapeViewModel(shape: Shape) {
@@ -18,6 +20,9 @@ export class ShapeViewModelFactory {
       case ShapeType.Square:
         const square = shape as Square;
         return new SquareViewModel(square);
+      case ShapeType.Hexagon:
+        const hexsagon = shape as Hexagon;
+        return new HexagonViewModel(hexsagon);
       default:
         throw new Error("Unknown shape type");
     }

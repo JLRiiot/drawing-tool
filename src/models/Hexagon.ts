@@ -1,14 +1,24 @@
 import { Point } from "./Point";
-import { Shape } from "./Shape";
+import { Shape, ShapeType } from "./Shape";
 
-export class Hexagon {
+export class Hexagon implements Shape {
   private _points: Point[];
-  type = "hexagon";
+  private _id: string;
 
-  constructor(points: Point[]) {
+  get id() {
+    return this._id;
+  }
+
+  get type() {
+    return ShapeType.Hexagon;
+  }
+
+  constructor(id: string, points: Point[]) {
     if (points.length !== 6) {
       throw new Error("Hexagon must have exactly 6 points");
     }
+
+    this._id = id;
     this._points = points;
   }
 

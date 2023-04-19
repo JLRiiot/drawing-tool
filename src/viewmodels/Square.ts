@@ -6,7 +6,7 @@ import { Square } from "../models/Square";
 
 class SquareViewModel implements ShapeViewModel {
   private _square: Square;
-  private _color: number = 0x000000;
+  private _color: number = 0x484890;
 
   constructor(triangle: Square) {
     this._square = triangle;

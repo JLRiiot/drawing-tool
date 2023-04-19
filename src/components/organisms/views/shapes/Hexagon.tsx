@@ -1,11 +1,11 @@
 import "@react-three/fiber";
-import SquareViewModel from "../../../../viewmodels/Square";
+import HexagonViewModel from "../../../../viewmodels/Hexagon";
 
-export interface SquareViewProps {
-  viewModel: SquareViewModel;
+export interface HexagonViewProps {
+  viewModel: HexagonViewModel;
 }
 
-function SquareView({ viewModel }: SquareViewProps) {
+function HexagonView({ viewModel }: HexagonViewProps) {
   return (
     <mesh>
       <meshBasicMaterial
@@ -18,4 +18,4 @@ function SquareView({ viewModel }: SquareViewProps) {
   );
 }
 
-export default SquareView;
+export default HexagonView;

@@ -1,29 +1,29 @@
 import { makeAutoObservable } from "mobx";
-import { Triangle } from "../models/Triangle";
+import * as THREE from "three";
 import { ShapeViewModel } from "./ShapeViewModel";
 import { Shape, ShapeType } from "../models/Shape";
-import * as THREE from "three";
+import { Hexagon } from "../models/Hexagon";
 
-class TriangleViewModel implements ShapeViewModel {
-  private _triangle: Triangle;
-  private _color: number = 0x489048;
+class HexagonViewModel implements ShapeViewModel {
+  private _hexagon: Hexagon;
+  private _color: number = 0x904848;
 
-  constructor(triangle: Triangle) {
-    this._triangle = triangle;
+  constructor(triangle: Hexagon) {
+    this._hexagon = triangle;
 
     makeAutoObservable(this);
   }
 
   get model(): Shape {
-    return this._triangle;
+    return this._hexagon;
   }
 
   get type(): ShapeType {
-    return this._triangle.type;
+    return this._hexagon.type;
   }
 
   get id(): string {
-    return this._triangle.id;
+    return this._hexagon.id;
   }
 
   getColor(): number {
@@ -39,18 +39,21 @@ class TriangleViewModel implements ShapeViewModel {
     shape.moveTo(this.points[0].x, this.points[0].y);
     shape.lineTo(this.points[1].x, this.points[1].y);
     shape.lineTo(this.points[2].x, this.points[2].y);
+    shape.lineTo(this.points[3].x, this.points[3].y);
+    shape.lineTo(this.points[4].x, this.points[4].y);
+    shape.lineTo(this.points[5].x, this.points[5].y);
     shape.lineTo(this.points[0].x, this.points[0].y);
 
     return shape;
   }
 
   get points() {
-    return this._triangle.points;
+    return this._hexagon.points;
   }
 
   setPoints(points: { x: number; y: number; z: number }[]) {
-    this._triangle.points = points;
+    this._hexagon.points = points;
   }
 }
 
-export default TriangleViewModel;
+export default HexagonViewModel;
