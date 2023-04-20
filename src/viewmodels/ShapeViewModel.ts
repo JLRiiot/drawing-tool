@@ -3,7 +3,7 @@ import { Shape, ShapeType } from "../models/Shape";
 import { action, computed, makeObservable, observable } from "mobx";
 
 export abstract class ShapeViewModel {
-  protected _selected: boolean = false;
+  public selected: boolean = false;
   public color: number = 0xd8d8d8;
 
   constructor() {
@@ -12,6 +12,7 @@ export abstract class ShapeViewModel {
       id: computed,
       model: computed,
       color: observable,
+      selected: observable,
       setColor: action.bound,
       toShape: observable,
       toggleSelected: action.bound,
@@ -25,7 +26,7 @@ export abstract class ShapeViewModel {
   abstract toShape(): THREE.Shape | THREE.Line;
 
   toggleSelected(): void {
-    this._selected = !this._selected;
+    this.selected = !this.selected;
   }
 
   setColor(color: number): void {

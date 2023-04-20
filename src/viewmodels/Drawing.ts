@@ -9,8 +9,8 @@ import { ShapeViewModelFactory } from "./ViewModelFacotry";
 export class DrawingViewModel {
   private _drawing: Drawing;
   private _shapesViewModels: ShapeViewModel[] = [];
-  private _drawingStrocke: number = 0;
   public currentTool: ToolViewModel | null = null;
+  public selectedShape: ShapeViewModel | null = null;
 
   constructor() {
     this._drawing = DrawingService.loadDrawing();
@@ -31,6 +31,7 @@ export class DrawingViewModel {
 
     // @FIXME: this will fail if we don't change the ID to be unique
     this._shapesViewModels.push(shape);
+    this.setSelectedShape(shape);
   }
 
   removeShape(shape: Shape) {
@@ -44,16 +45,15 @@ export class DrawingViewModel {
     this.currentTool = tool;
   }
 
-  startDrawing() {
-    this._drawingStrocke++;
-  }
-
-  endDrawing() {
-    this._drawingStrocke = 0;
-  }
-
-  continueDrawing() {
-    this._drawingStrocke++;
+  setSelectedShape(shape: ShapeViewModel | null) {
+    if (this.selectedShape) {
+      this.selectedShape.toggleSelected();
+      this.selectedShape = shape;
+      shape?.toggleSelected();
+    } else {
+      this.selectedShape = shape;
+      shape?.toggleSelected();
+    }
   }
 
   save() {

@@ -37,6 +37,7 @@ const domCoordsToCameraCoords = (
 
 const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
   const groupRef = useRef<THREE.Group>(null);
+  const sceneRef = useRef<THREE.Scene>(null);
   const defaultCamera = useThree((state) => state.camera);
   const events = useThree((state) => state.events);
   // This is required to attach to the correct mouse events
@@ -54,7 +55,11 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
           defaultCamera
         );
 
-        drawingViewModel.currentTool.handlePointerDown(mouse, groupRef.current);
+        drawingViewModel.currentTool.handlePointerDown(
+          mouse,
+          groupRef.current,
+          defaultCamera
+        );
       }
     },
     [domElement, defaultCamera, drawingViewModel, groupRef]
@@ -72,7 +77,11 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
           defaultCamera
         );
 
-        drawingViewModel.currentTool.handlePointerMove(mouse, groupRef.current);
+        drawingViewModel.currentTool.handlePointerMove(
+          mouse,
+          groupRef.current,
+          defaultCamera
+        );
       }
     },
     [domElement, defaultCamera, drawingViewModel, groupRef]
@@ -82,7 +91,7 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
     (event: any) => {
       event.preventDefault();
 
-      if (groupRef.current !== null && drawingViewModel.currentTool) {
+      if (sceneRef.current !== null && drawingViewModel.currentTool) {
         const mouse = domCoordsToCameraCoords(
           event.clientX,
           event.clientY,
@@ -90,10 +99,14 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
           defaultCamera
         );
 
-        drawingViewModel.currentTool.handlePointerUp(mouse, groupRef.current);
+        drawingViewModel.currentTool.handlePointerUp(
+          mouse,
+          sceneRef.current,
+          defaultCamera
+        );
       }
     },
-    [domElement, defaultCamera, drawingViewModel, groupRef]
+    [domElement, defaultCamera, drawingViewModel, sceneRef]
   );
 
   useEffect(() => {
@@ -122,7 +135,7 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
   );
 
   return (
-    <scene>
+    <scene ref={sceneRef}>
       <group ref={groupRef}>{shapes}</group>
     </scene>
   );

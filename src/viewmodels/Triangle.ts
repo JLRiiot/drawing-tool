@@ -1,4 +1,4 @@
-import { makeObservable, override } from "mobx";
+import { computed, makeObservable, override } from "mobx";
 import { Triangle } from "../models/Triangle";
 import { ShapeViewModel } from "./ShapeViewModel";
 import { Shape, ShapeType } from "../models/Shape";
@@ -18,6 +18,7 @@ class TriangleViewModel extends ShapeViewModel {
       model: override,
       toShape: override,
       // Own properties
+      points: computed,
     });
 
     this.setColor(0x489048);
@@ -37,15 +38,15 @@ class TriangleViewModel extends ShapeViewModel {
 
   toShape(): THREE.Shape {
     const shape = new THREE.Shape();
-    shape.moveTo(this.getPoints()[0].x, this.getPoints()[0].y);
-    shape.lineTo(this.getPoints()[1].x, this.getPoints()[1].y);
-    shape.lineTo(this.getPoints()[2].x, this.getPoints()[2].y);
-    shape.lineTo(this.getPoints()[0].x, this.getPoints()[0].y);
+    shape.moveTo(this.points[0].x, this.points[0].y);
+    shape.lineTo(this.points[1].x, this.points[1].y);
+    shape.lineTo(this.points[2].x, this.points[2].y);
+    shape.lineTo(this.points[0].x, this.points[0].y);
 
     return shape;
   }
 
-  getPoints() {
+  get points() {
     return this._triangle.points;
   }
 

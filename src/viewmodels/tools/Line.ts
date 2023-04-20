@@ -16,7 +16,6 @@ export class LineToolViewModel extends ToolViewModel {
 
     this._line = new LineViewModel(line);
 
-    this.drawing.startDrawing();
     this.drawing.addShape(this._line);
   }
 
@@ -26,12 +25,10 @@ export class LineToolViewModel extends ToolViewModel {
     const { x, y, z } = pointer;
 
     this._line.setEnd(new THREE.Vector3(x, y, z));
-    this.drawing.continueDrawing();
   }
 
-  handlePointerUp(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerUp(pointer: THREE.Vector3, group: THREE.Scene): void {
     this._line = null;
-    this.drawing.endDrawing();
   }
 
   toolControl(): JSX.Element | null {

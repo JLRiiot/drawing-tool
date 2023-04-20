@@ -1,9 +1,5 @@
 import React from "react";
-import {
-  AiOutlineSelect,
-  AiOutlineDrag,
-  AiOutlineCloseCircle,
-} from "react-icons/ai";
+import { AiOutlineDrag, AiOutlineCloseCircle } from "react-icons/ai";
 import VerticalToolBar from "../../atoms/VerticalToolbar";
 import Tool from "../../molecules/Tool";
 import TriangleToolView from "./tools/Triangle";
@@ -11,6 +7,7 @@ import { DrawingViewModel } from "../../../viewmodels/Drawing";
 import LineToolView from "./tools/Line";
 import SquareToolView from "./tools/Square";
 import HexagonToolView from "./tools/Hexagon";
+import SelectionToolView from "./tools/Selection";
 
 export interface DrawingToolsProps {
   drawingViewModel: DrawingViewModel;
@@ -19,7 +16,7 @@ export interface DrawingToolsProps {
 function DrawingTools({ drawingViewModel }: DrawingToolsProps) {
   return (
     <VerticalToolBar>
-      <Tool icon={AiOutlineSelect} toolName="Selection" />
+      <SelectionToolView drawingViewModel={drawingViewModel} />
       <Tool icon={AiOutlineDrag} toolName="Move" />
       <Tool icon={AiOutlineCloseCircle} toolName="Closest point" />
       {/* <Tool icon={BsTriangle} toolName="Triangle" /> */}

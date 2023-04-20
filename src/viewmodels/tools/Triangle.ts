@@ -24,7 +24,7 @@ export class TriangleToolViewModel extends ToolViewModel {
     // console.debug("TriangleToolViewModel.handlePointerMove", event, group);
   }
 
-  handlePointerUp(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerUp(pointer: THREE.Vector3, group: THREE.Scene): void {
     this._triangleViewModel = null;
   }
 
