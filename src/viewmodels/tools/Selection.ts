@@ -30,6 +30,8 @@ export class SelectionToolViewModel extends ToolViewModel {
       const intersect = intersects[0];
       const object = intersect.object;
 
+      console.debug("Selected object", object);
+
       const viewModel = (object.userData.viewModel as ShapeViewModel) || null;
 
       this.drawing.setSelectedShape(viewModel);

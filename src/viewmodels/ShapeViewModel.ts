@@ -16,12 +16,14 @@ export abstract class ShapeViewModel {
       setColor: action.bound,
       toShape: observable,
       toggleSelected: action.bound,
+      actionPoints: computed,
     });
   }
 
   abstract get type(): ShapeType;
   abstract get id(): string;
   abstract get model(): Shape;
+  abstract get actionPoints(): THREE.Vector3[];
   // @FIXME: abstraction leak, we will have to modify to support Circles for example :/
   abstract toShape(): THREE.Shape | THREE.Line;
 

@@ -1,4 +1,4 @@
-import { action, makeObservable, observable, override } from "mobx";
+import { makeObservable, override } from "mobx";
 import * as THREE from "three";
 import { ShapeViewModel } from "./ShapeViewModel";
 import { Shape, ShapeType } from "../models/Shape";
@@ -18,8 +18,6 @@ class SquareViewModel extends ShapeViewModel {
       model: override,
       toShape: override,
       // Own properties
-      getPoints: observable,
-      setPoints: action.bound,
     });
 
     this.setColor(0x484890);
@@ -39,21 +37,19 @@ class SquareViewModel extends ShapeViewModel {
 
   toShape(): THREE.Shape {
     const shape = new THREE.Shape();
-    shape.moveTo(this.getPoints()[0].x, this.getPoints()[0].y);
-    shape.lineTo(this.getPoints()[1].x, this.getPoints()[1].y);
-    shape.lineTo(this.getPoints()[2].x, this.getPoints()[2].y);
-    shape.lineTo(this.getPoints()[3].x, this.getPoints()[3].y);
-    shape.lineTo(this.getPoints()[0].x, this.getPoints()[0].y);
+    shape.moveTo(this.actionPoints[0].x, this.actionPoints[0].y);
+    shape.lineTo(this.actionPoints[1].x, this.actionPoints[1].y);
+    shape.lineTo(this.actionPoints[2].x, this.actionPoints[2].y);
+    shape.lineTo(this.actionPoints[3].x, this.actionPoints[3].y);
+    shape.lineTo(this.actionPoints[0].x, this.actionPoints[0].y);
 
     return shape;
   }
 
-  getPoints() {
-    return this._square.points;
-  }
-
-  setPoints(points: { x: number; y: number; z: number }[]) {
-    this._square.points = points;
+  get actionPoints() {
+    return this._square.points.map(
+      (point) => new THREE.Vector3(point.x, point.y, point.z)
+    );
   }
 }
 

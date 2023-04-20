@@ -46,14 +46,8 @@ export class DrawingViewModel {
   }
 
   setSelectedShape(shape: ShapeViewModel | null) {
-    if (this.selectedShape) {
-      this.selectedShape.toggleSelected();
-      this.selectedShape = shape;
-      shape?.toggleSelected();
-    } else {
-      this.selectedShape = shape;
-      shape?.toggleSelected();
-    }
+    this.selectedShape = shape;
+    shape?.toggleSelected();
   }
 
   save() {

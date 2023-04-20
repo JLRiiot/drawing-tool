@@ -18,7 +18,6 @@ class HexagonViewModel extends ShapeViewModel {
       model: override,
       toShape: override,
       // Own properties
-      getPoints: observable,
       setPoints: action.bound,
     });
 
@@ -37,21 +36,23 @@ class HexagonViewModel extends ShapeViewModel {
     return this._hexagon.id;
   }
 
-  toShape(): THREE.Shape {
-    const shape = new THREE.Shape();
-    shape.moveTo(this.getPoints()[0].x, this.getPoints()[0].y);
-    shape.lineTo(this.getPoints()[1].x, this.getPoints()[1].y);
-    shape.lineTo(this.getPoints()[2].x, this.getPoints()[2].y);
-    shape.lineTo(this.getPoints()[3].x, this.getPoints()[3].y);
-    shape.lineTo(this.getPoints()[4].x, this.getPoints()[4].y);
-    shape.lineTo(this.getPoints()[5].x, this.getPoints()[5].y);
-    shape.lineTo(this.getPoints()[0].x, this.getPoints()[0].y);
-
-    return shape;
+  get actionPoints() {
+    return this._hexagon.points.map(
+      (point) => new THREE.Vector3(point.x, point.y, point.z)
+    );
   }
 
-  getPoints() {
-    return this._hexagon.points;
+  toShape(): THREE.Shape {
+    const shape = new THREE.Shape();
+    shape.moveTo(this.actionPoints[0].x, this.actionPoints[0].y);
+    shape.lineTo(this.actionPoints[1].x, this.actionPoints[1].y);
+    shape.lineTo(this.actionPoints[2].x, this.actionPoints[2].y);
+    shape.lineTo(this.actionPoints[3].x, this.actionPoints[3].y);
+    shape.lineTo(this.actionPoints[4].x, this.actionPoints[4].y);
+    shape.lineTo(this.actionPoints[5].x, this.actionPoints[5].y);
+    shape.lineTo(this.actionPoints[0].x, this.actionPoints[0].y);
+
+    return shape;
   }
 
   setPoints(points: { x: number; y: number; z: number }[]) {

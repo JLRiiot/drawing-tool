@@ -53,6 +53,10 @@ class LineViewModel extends ShapeViewModel {
     return this._line.id;
   }
 
+  get actionPoints() {
+    return [this.start, this.end];
+  }
+
   setStart(start: THREE.Vector3) {
     this.start = new THREE.Vector3(start.x, start.y, start.z);
     this._line.points[0].x = start.x;
