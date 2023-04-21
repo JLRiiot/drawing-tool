@@ -17,6 +17,7 @@ export abstract class ShapeViewModel {
       toShape: observable,
       toggleSelected: action.bound,
       actionPoints: computed,
+      fromMesh: action.bound,
     });
   }
 
@@ -26,6 +27,7 @@ export abstract class ShapeViewModel {
   abstract get actionPoints(): THREE.Vector3[];
   // @FIXME: abstraction leak, we will have to modify to support Circles for example :/
   abstract toShape(): THREE.Shape | THREE.Line;
+  abstract fromMesh(delta: THREE.Mesh): void;
 
   toggleSelected(): void {
     this.selected = !this.selected;

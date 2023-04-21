@@ -6,17 +6,17 @@ export abstract class ToolViewModel {
 
   abstract handlePointerDown(
     pointer: THREE.Vector3,
-    group: THREE.Group,
+    scene: THREE.Scene,
     camera: THREE.Camera
   ): void;
   abstract handlePointerMove(
     pointer: THREE.Vector3,
-    group: THREE.Group,
+    scene: THREE.Scene,
     camera: THREE.Camera
   ): void;
   abstract handlePointerUp(
     pointer: THREE.Vector3,
-    group: THREE.Scene,
+    scene: THREE.Scene,
     camera: THREE.Camera
   ): void;
   abstract toolControl(): JSX.Element | null;

@@ -8,6 +8,7 @@ import LineToolView from "./tools/Line";
 import SquareToolView from "./tools/Square";
 import HexagonToolView from "./tools/Hexagon";
 import SelectionToolView from "./tools/Selection";
+import MoveToolView from "./tools/Move";
 
 export interface DrawingToolsProps {
   drawingViewModel: DrawingViewModel;
@@ -17,7 +18,7 @@ function DrawingTools({ drawingViewModel }: DrawingToolsProps) {
   return (
     <VerticalToolBar>
       <SelectionToolView drawingViewModel={drawingViewModel} />
-      <Tool icon={AiOutlineDrag} toolName="Move" />
+      <MoveToolView drawingViewModel={drawingViewModel} />
       <Tool icon={AiOutlineCloseCircle} toolName="Closest point" />
       {/* <Tool icon={BsTriangle} toolName="Triangle" /> */}
       <LineToolView drawingViewModel={drawingViewModel}></LineToolView>

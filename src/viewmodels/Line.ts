@@ -57,6 +57,10 @@ class LineViewModel extends ShapeViewModel {
     return [this.start, this.end];
   }
 
+  fromMesh(mesh: THREE.Mesh): void {
+    throw new Error("Method not implemented.");
+  }
+
   setStart(start: THREE.Vector3) {
     this.start = new THREE.Vector3(start.x, start.y, start.z);
     this._line.points[0].x = start.x;

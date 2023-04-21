@@ -6,7 +6,7 @@ import TriangleViewModel from "../Triangle";
 export class TriangleToolViewModel extends ToolViewModel {
   private _triangleViewModel: TriangleViewModel | null = null;
 
-  handlePointerDown(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerDown(pointer: THREE.Vector3): void {
     const triangleEdgeSize = 10;
 
     const triangleVertices = this.createEquilateralTrianglePoints(
@@ -20,7 +20,7 @@ export class TriangleToolViewModel extends ToolViewModel {
     this.drawing.addShape(this._triangleViewModel);
   }
 
-  handlePointerMove(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerMove(pointer: THREE.Vector3): void {
     // console.debug("TriangleToolViewModel.handlePointerMove", event, group);
   }
 

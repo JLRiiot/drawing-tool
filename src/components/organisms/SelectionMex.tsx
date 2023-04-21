@@ -19,8 +19,6 @@ const SelectionMesh = observer(({ viewModel }: SelectionMeshProps) => {
     segments.push(p2Vector);
   }
 
-  console.debug("SelectionMesh segments", segments);
-
   const material = new THREE.LineBasicMaterial({
     color: 0xffffff,
   });

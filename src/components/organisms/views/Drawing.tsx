@@ -36,7 +36,6 @@ const domCoordsToCameraCoords = (
 };
 
 const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
-  const groupRef = useRef<THREE.Group>(null);
   const sceneRef = useRef<THREE.Scene>(null);
   const defaultCamera = useThree((state) => state.camera);
   const events = useThree((state) => state.events);
@@ -47,7 +46,7 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
     (event: any) => {
       event.preventDefault();
 
-      if (groupRef.current !== null && drawingViewModel.currentTool) {
+      if (sceneRef.current !== null && drawingViewModel.currentTool) {
         const mouse = domCoordsToCameraCoords(
           event.clientX,
           event.clientY,
@@ -57,19 +56,19 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
 
         drawingViewModel.currentTool.handlePointerDown(
           mouse,
-          groupRef.current,
+          sceneRef.current,
           defaultCamera
         );
       }
     },
-    [domElement, defaultCamera, drawingViewModel, groupRef]
+    [domElement, defaultCamera, drawingViewModel, sceneRef]
   );
 
   const handlePointerMove = useCallback(
     (event: any) => {
       event.preventDefault();
 
-      if (groupRef.current !== null && drawingViewModel.currentTool) {
+      if (sceneRef.current !== null && drawingViewModel.currentTool) {
         const mouse = domCoordsToCameraCoords(
           event.clientX,
           event.clientY,
@@ -79,12 +78,12 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
 
         drawingViewModel.currentTool.handlePointerMove(
           mouse,
-          groupRef.current,
+          sceneRef.current,
           defaultCamera
         );
       }
     },
-    [domElement, defaultCamera, drawingViewModel, groupRef]
+    [domElement, defaultCamera, drawingViewModel, sceneRef]
   );
 
   const handlePointerUp = useCallback(
@@ -136,7 +135,7 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
 
   return (
     <scene ref={sceneRef}>
-      <group ref={groupRef}>{shapes}</group>
+      <group>{shapes}</group>
     </scene>
   );
 });

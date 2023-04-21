@@ -1,4 +1,4 @@
-import { makeObservable, override } from "mobx";
+import { action, makeObservable, override } from "mobx";
 import * as THREE from "three";
 import { ShapeViewModel } from "./ShapeViewModel";
 import { Shape, ShapeType } from "../models/Shape";
@@ -18,6 +18,7 @@ class SquareViewModel extends ShapeViewModel {
       model: override,
       toShape: override,
       // Own properties
+      setPoints: action.bound,
     });
 
     this.setColor(0x484890);
@@ -35,6 +36,28 @@ class SquareViewModel extends ShapeViewModel {
     return this._square.id;
   }
 
+  fromMesh(mesh: THREE.Mesh): void {
+    const geometry = mesh.geometry.clone();
+    geometry.applyMatrix4(mesh.matrixWorld);
+
+    if (geometry instanceof THREE.BufferGeometry) {
+      const positionAttribute = geometry.getAttribute("position");
+
+      // @todo: investigate what is this kind of positionAttribute
+      if (positionAttribute instanceof THREE.GLBufferAttribute) {
+        return;
+      }
+
+      const vertices = [];
+
+      for (let i = 0; i < positionAttribute.count; i++) {
+        vertices.push(
+          new THREE.Vector3().fromBufferAttribute(positionAttribute, i)
+        );
+      }
+    }
+  }
+
   toShape(): THREE.Shape {
     const shape = new THREE.Shape();
     shape.moveTo(this.actionPoints[0].x, this.actionPoints[0].y);
@@ -50,6 +73,10 @@ class SquareViewModel extends ShapeViewModel {
     return this._square.points.map(
       (point) => new THREE.Vector3(point.x, point.y, point.z)
     );
+  }
+
+  setPoints(points: THREE.Vector3[]): void {
+    this._square.points = points.map((p) => ({ x: p.x, y: p.y, z: p.z }));
   }
 }
 

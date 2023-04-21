@@ -6,7 +6,7 @@ import { Hexagon } from "../../models/Hexagon";
 export class HexagonToolViewModel extends ToolViewModel {
   private _squareViewModel: HexagonViewModel | null = null;
 
-  handlePointerDown(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerDown(pointer: THREE.Vector3): void {
     const triangleEdgeSize = 10;
 
     const squareeVertices = this.createHexagon(pointer, triangleEdgeSize);
@@ -17,7 +17,7 @@ export class HexagonToolViewModel extends ToolViewModel {
     this.drawing.addShape(this._squareViewModel);
   }
 
-  handlePointerMove(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerMove(_pointer: THREE.Vector3): void {
     // console.debug("TriangleToolViewModel.handlePointerMove", event, group);
   }
 

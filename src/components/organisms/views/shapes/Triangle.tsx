@@ -8,8 +8,6 @@ export interface TriangleViewProps {
 }
 
 const TriangleView = observer(({ viewModel }: TriangleViewProps) => {
-  console.debug("Re-rendering TriangleView", viewModel);
-
   return (
     <mesh userData={{ viewModel }}>
       <meshBasicMaterial

@@ -6,7 +6,7 @@ import { Square } from "../../models/Square";
 export class SquareToolViewModel extends ToolViewModel {
   private _squareViewModel: SquareViewModel | null = null;
 
-  handlePointerDown(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerDown(pointer: THREE.Vector3): void {
     const triangleEdgeSize = 10;
 
     const squareeVertices = this.createSquare(pointer, triangleEdgeSize);
@@ -17,7 +17,7 @@ export class SquareToolViewModel extends ToolViewModel {
     this.drawing.addShape(this._squareViewModel);
   }
 
-  handlePointerMove(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerMove(): void {
     // console.debug("TriangleToolViewModel.handlePointerMove", event, group);
   }
 

@@ -6,7 +6,7 @@ import LineViewModel from "../Line";
 export class LineToolViewModel extends ToolViewModel {
   private _line: LineViewModel | null = null;
 
-  handlePointerDown(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerDown(pointer: THREE.Vector3): void {
     const { x, y, z } = pointer;
 
     const line = new Line(Date.now().toString(), [
@@ -19,7 +19,7 @@ export class LineToolViewModel extends ToolViewModel {
     this.drawing.addShape(this._line);
   }
 
-  handlePointerMove(pointer: THREE.Vector3, group: THREE.Group): void {
+  handlePointerMove(pointer: THREE.Vector3): void {
     if (!this._line) return;
 
     const { x, y, z } = pointer;

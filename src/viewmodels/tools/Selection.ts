@@ -3,16 +3,8 @@ import { ToolViewModel } from "./Tool";
 import { ShapeViewModel } from "../ShapeViewModel";
 
 export class SelectionToolViewModel extends ToolViewModel {
-  handlePointerDown(
-    pointer: THREE.Vector3,
-    group: THREE.Group,
-    camera: THREE.Camera
-  ): void {}
-  handlePointerMove(
-    pointer: THREE.Vector3,
-    group: THREE.Group,
-    camera: THREE.Camera
-  ): void {}
+  handlePointerDown(): void {}
+  handlePointerMove(): void {}
   handlePointerUp(
     pointer: THREE.Vector3,
     group: THREE.Scene,
