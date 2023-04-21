@@ -1,4 +1,49 @@
-# Getting Started with Create React App
+## Table of Contents
+
+1. [Architecture](#architecture)
+   - [View](#view)
+   - [Viewmodel](#viewmodel)
+   - [Model](#model)
+   - [Testing](#testing)
+2. [Caveats of this architecture](#caveats-of-this-architecture)
+3. [Create React App](#create-react-app)
+   - [Available Scripts](#available-scripts)
+     - [`npm start`](#npm-start)
+     - [`npm test`](#npm-test)
+     - [`npm run build`](#npm-run-build)
+     - [`npm run eject`](#npm-run-eject)
+   - [Learn More](#learn-more)
+
+# Architecture
+
+This app is using MVVM (Model View Viewmodel) pattern, the communincation flow is:
+
+View -> Viewmodel -> Model
+
+## View
+
+The view is responsible of the rendering of each element, the elements can be a tool bar or a tool button and even the Three.js objects are Views. To achieve this I am using `@react-three/fiber` which is a very good abstraction of Three.js using react components
+
+## Viewmodel
+
+The Viewmodel is in charge of UI interactions like `Pointer Down`, `Pointer Up` and `Pointer Move` however it is not limited to pointer inputs, the same view model can be used from a different View to modify the color of the shape for example.
+
+## Model
+
+The Model is responsible of Business Logic like making sure that Triangles have always 3 vertices and Hexagon 6, in this example the BL is very simple but it serves as example.
+
+## Testing
+
+Thanks to the MVVM pattern it should be very easy to implement unit tests on each component.
+
+# Caveats of this architecture
+
+- The abstraction, in this example we have a couple of Abtraction Leaks that have to be fixed.
+- We need to deal is with `Mobx` constraints like the limitations when `overriding` members of a `super-class`.
+- The reactivity of the Views (`React`) depends on `Mobx` usage and sometimes it is very difficult to find why a component is not updating.
+- The implementation of the `Closest point` tool is consuming way too much memory, the reason is the amount of `Material` instances we are creating every time the `Pointer Moves`, to fix this we should implement an `Object pool` to pick reusable `Materials`
+
+# Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
