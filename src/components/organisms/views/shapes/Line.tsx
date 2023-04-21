@@ -20,7 +20,7 @@ const LineView = observer(({ viewModel }: LineViewProps) => {
   });
   const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
-  return <lineSegments args={[geometry, material]} />;
+  return <lineSegments args={[geometry, material]} name={viewModel.id} />;
 });
 
 export default LineView;

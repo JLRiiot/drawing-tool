@@ -9,7 +9,7 @@ export interface HexagonViewProps {
 
 const HexagonView = observer(({ viewModel }: HexagonViewProps) => {
   return (
-    <mesh userData={{ viewModel }}>
+    <mesh userData={{ viewModel }} name={viewModel.id}>
       <meshBasicMaterial
         color={viewModel.color}
         opacity={0.8}

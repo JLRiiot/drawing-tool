@@ -9,7 +9,7 @@ export interface TriangleViewProps {
 
 const TriangleView = observer(({ viewModel }: TriangleViewProps) => {
   return (
-    <mesh userData={{ viewModel }}>
+    <mesh userData={{ viewModel }} name={viewModel.id}>
       <meshBasicMaterial
         color={viewModel.color}
         opacity={viewModel.selected ? 0.5 : 1}

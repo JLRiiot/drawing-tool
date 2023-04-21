@@ -16,7 +16,7 @@ const TargetIndicatorView = observer(
     });
 
     return (
-      <group>
+      <group name={viewModel.id}>
         {rings.map((ring) => {
           const ringRadius = (1 * (ring + 1)) / rings.length;
 
