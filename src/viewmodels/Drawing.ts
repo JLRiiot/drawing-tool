@@ -45,7 +45,10 @@ export class DrawingViewModel {
 
   removeShape(shape: Shape) {
     this._drawing.removeShape(shape);
-    this._shapes.splice(this._shapes.findIndex((s) => s.id === shape.id));
+    this._shapes.splice(
+      this._shapes.findIndex((s) => s.id === shape.id),
+      1
+    );
   }
 
   setCurrentTool(tool: ToolViewModel | null) {
