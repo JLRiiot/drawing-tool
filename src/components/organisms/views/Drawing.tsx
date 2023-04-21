@@ -132,10 +132,20 @@ const DrawingView = observer(({ drawingViewModel }: DrawingViewProps) => {
       );
     }
   );
+  const toolsOverlayShapes = drawingViewModel.toolOverlayedShapes.map(
+    (shapeViewModel: ShapeViewModel) => {
+      const ShapeComponent = ShapeFactory.getShapeView(shapeViewModel.type);
+
+      return (
+        <ShapeComponent key={shapeViewModel.id} viewModel={shapeViewModel} />
+      );
+    }
+  );
 
   return (
     <scene ref={sceneRef}>
-      <group>{shapes}</group>
+      <group name={"drawing-layer"}>{shapes}</group>
+      <group name={"tool-overlay-layer"}>{toolsOverlayShapes}</group>
     </scene>
   );
 });

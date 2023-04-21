@@ -37,8 +37,8 @@ export class MoveToolViewModel extends ToolViewModel {
     const currentPosition = this.selectedMesh.position;
     const delta = new THREE.Vector3().subVectors(this.end, this.start);
     const newPosition = new THREE.Vector3().addVectors(currentPosition, delta);
+    this.drawing.selectedShape?.moveDelta(delta);
     this.selectedMesh.position.copy(newPosition);
-    this.drawing.selectedShape?.fromMesh(this.selectedMesh);
 
     this.start = this.end;
   }

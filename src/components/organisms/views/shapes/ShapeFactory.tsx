@@ -2,6 +2,7 @@ import { ShapeType } from "../../../../models/Shape";
 import HexagonView from "./Hexagon";
 import LineView from "./Line";
 import SquareView from "./Square";
+import TargetIndicatorView from "./TargetIndicator";
 import TriangleView from "./Triangle";
 
 class ShapeViewFactory {
@@ -15,8 +16,10 @@ class ShapeViewFactory {
         return SquareView;
       case ShapeType.Hexagon:
         return HexagonView;
+      case ShapeType.TargetIndicator:
+        return TargetIndicatorView;
       default:
-        return () => <div>Shape not found</div>;
+        throw new Error("Unknown Shape view");
     }
   }
 }

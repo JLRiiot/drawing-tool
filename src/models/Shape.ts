@@ -13,4 +13,5 @@ export enum ShapeType {
   Polygon = "polygon",
   Draft = "draft",
   Line = "line",
+  TargetIndicator = "target-indicator",
 }

@@ -8,13 +8,14 @@ import { ShapeViewModelFactory } from "./ViewModelFacotry";
 
 export class DrawingViewModel {
   private _drawing: Drawing;
-  private _shapesViewModels: ShapeViewModel[] = [];
-  public currentTool: ToolViewModel | null = null;
+  private _shapes: ShapeViewModel[] = [];
   public selectedShape: ShapeViewModel | null = null;
+  public currentTool: ToolViewModel | null = null;
+  public toolOverlayedShapes: ShapeViewModel[] = [];
 
   constructor() {
     this._drawing = DrawingService.loadDrawing();
-    this._shapesViewModels = this._drawing.shapes.map((shape) => {
+    this._shapes = this._drawing.shapes.map((shape) => {
       const shapeViewModel = ShapeViewModelFactory.createShapeViewModel(shape);
       return shapeViewModel;
     });
@@ -23,25 +24,32 @@ export class DrawingViewModel {
   }
 
   get shapes() {
-    return [...this._shapesViewModels];
+    return [...this._shapes];
   }
 
   addShape(shape: ShapeViewModel) {
     this._drawing.addShape(shape.model);
 
     // @FIXME: this will fail if we don't change the ID to be unique
-    this._shapesViewModels.push(shape);
+    this._shapes.push(shape);
     this.setSelectedShape(shape);
+  }
+
+  addToolOverlayedShape(shape: ShapeViewModel) {
+    this.toolOverlayedShapes.push(shape);
+  }
+
+  cleanToolOverlay() {
+    this.toolOverlayedShapes.splice(0);
   }
 
   removeShape(shape: Shape) {
     this._drawing.removeShape(shape);
-    this._shapesViewModels.splice(
-      this._shapesViewModels.findIndex((s) => s.id === shape.id)
-    );
+    this._shapes.splice(this._shapes.findIndex((s) => s.id === shape.id));
   }
 
   setCurrentTool(tool: ToolViewModel | null) {
+    this.cleanToolOverlay();
     this.currentTool = tool;
   }
 

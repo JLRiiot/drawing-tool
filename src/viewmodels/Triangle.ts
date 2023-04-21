@@ -38,6 +38,12 @@ class TriangleViewModel extends ShapeViewModel {
     return this.triangle.id;
   }
 
+  get actionPoints() {
+    return this.triangle.points.map(
+      (point) => new THREE.Vector3(point.x, point.y, point.z)
+    );
+  }
+
   fromMesh(mesh: THREE.Mesh): void {
     const geometry = mesh.geometry.clone();
     geometry.applyMatrix4(mesh.matrixWorld);
@@ -70,14 +76,53 @@ class TriangleViewModel extends ShapeViewModel {
     return shape;
   }
 
-  get actionPoints() {
-    return this.triangle.points.map(
-      (point) => new THREE.Vector3(point.x, point.y, point.z)
-    );
+  getClosestPointTo(point: THREE.Vector3): THREE.Vector3 {
+    let segments: [THREE.Vector3, THREE.Vector3][] = [];
+
+    for (let i = 0; i < this.triangle.points.length; i++) {
+      const start = this.triangle.points[i];
+      const end = this.triangle.points[(i + 1) % this.triangle.points.length];
+
+      segments.push([
+        new THREE.Vector3(start.x, start.y, start.z),
+        new THREE.Vector3(end.x, end.y, end.z),
+      ]);
+    }
+
+    let closestPoint: THREE.Vector3 = new THREE.Vector3();
+    let closestDistance = Infinity;
+
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      const line = new THREE.Line3(segment[0], segment[1]);
+
+      const tempClosestPoint = new THREE.Vector3();
+      line.closestPointToPoint(point, true, tempClosestPoint);
+      const tempDistance = tempClosestPoint.distanceTo(point);
+
+      if (tempDistance < closestDistance) {
+        closestDistance = tempDistance;
+        closestPoint = tempClosestPoint;
+      }
+    }
+
+    return closestPoint;
   }
 
   setPoints(points: { x: number; y: number; z: number }[]) {
     this.triangle.points = points;
+  }
+
+  moveDelta(delta: THREE.Vector3): void {
+    this.setPoints(
+      this.triangle.points.map((point) => {
+        return {
+          x: point.x + delta.x,
+          y: point.y + delta.y,
+          z: point.z + delta.z,
+        };
+      })
+    );
   }
 }
 

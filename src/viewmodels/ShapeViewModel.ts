@@ -26,8 +26,10 @@ export abstract class ShapeViewModel {
   abstract get model(): Shape;
   abstract get actionPoints(): THREE.Vector3[];
   // @FIXME: abstraction leak, we will have to modify to support Circles for example :/
-  abstract toShape(): THREE.Shape | THREE.Line;
+  abstract toShape(): THREE.Shape | THREE.Line | THREE.Mesh;
   abstract fromMesh(delta: THREE.Mesh): void;
+  abstract getClosestPointTo(point: THREE.Vector3): THREE.Vector3;
+  abstract moveDelta(delta: THREE.Vector3): void;
 
   toggleSelected(): void {
     this.selected = !this.selected;

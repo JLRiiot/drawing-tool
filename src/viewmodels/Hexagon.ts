@@ -80,6 +80,51 @@ class HexagonViewModel extends ShapeViewModel {
   setPoints(points: { x: number; y: number; z: number }[]) {
     this._hexagon.points = points;
   }
+
+  getClosestPointTo(point: THREE.Vector3): THREE.Vector3 {
+    let segments: [THREE.Vector3, THREE.Vector3][] = [];
+
+    for (let i = 0; i < this._hexagon.points.length; i++) {
+      const start = this._hexagon.points[i];
+      const end = this._hexagon.points[(i + 1) % this._hexagon.points.length];
+
+      segments.push([
+        new THREE.Vector3(start.x, start.y, start.z),
+        new THREE.Vector3(end.x, end.y, end.z),
+      ]);
+    }
+
+    let closestPoint: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    let closestDistance = Infinity;
+
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      const line = new THREE.Line3(segment[0], segment[1]);
+
+      const tempClosestPoint = new THREE.Vector3();
+      line.closestPointToPoint(point, true, tempClosestPoint);
+      const tempDistance = tempClosestPoint.distanceTo(point);
+
+      if (tempDistance < closestDistance) {
+        closestDistance = tempDistance;
+        closestPoint = tempClosestPoint;
+      }
+    }
+
+    return closestPoint;
+  }
+
+  moveDelta(delta: THREE.Vector3): void {
+    this.setPoints(
+      this._hexagon.points.map((point) => {
+        return {
+          x: point.x + delta.x,
+          y: point.y + delta.y,
+          z: point.z + delta.z,
+        };
+      })
+    );
+  }
 }
 
 export default HexagonViewModel;

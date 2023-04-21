@@ -78,6 +78,45 @@ class LineViewModel extends ShapeViewModel {
   toShape(): THREE.Line {
     throw new Error("Method not implemented.");
   }
+
+  getClosestPointTo(point: THREE.Vector3): THREE.Vector3 {
+    const segments: [THREE.Vector3, THREE.Vector3][] = [[this.start, this.end]];
+
+    let closestPoint: THREE.Vector3 = new THREE.Vector3(0, 0, 0);
+    let closestDistance = Infinity;
+
+    for (let i = 0; i < segments.length; i++) {
+      const segment = segments[i];
+      const line = new THREE.Line3(segment[0], segment[1]);
+
+      const tempPoint = line.closestPointToPoint(point, true, closestPoint);
+      const tempDistance = point.distanceTo(closestPoint);
+
+      if (tempDistance < closestDistance) {
+        closestDistance = tempDistance;
+        closestPoint = tempPoint;
+      }
+    }
+
+    return closestPoint;
+  }
+
+  moveDelta(delta: THREE.Vector3): void {
+    this.setStart(
+      new THREE.Vector3(
+        this.start.x + delta.x,
+        this.start.y + delta.y,
+        this.start.z + delta.z
+      )
+    );
+    this.setEnd(
+      new THREE.Vector3(
+        this.end.x + delta.x,
+        this.end.y + delta.y,
+        this.end.z + delta.z
+      )
+    );
+  }
 }
 
 export function isLineViewModel(

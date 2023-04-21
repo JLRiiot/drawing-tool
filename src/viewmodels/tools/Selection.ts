@@ -27,6 +27,8 @@ export class SelectionToolViewModel extends ToolViewModel {
       const viewModel = (object.userData.viewModel as ShapeViewModel) || null;
 
       this.drawing.setSelectedShape(viewModel);
+    } else {
+      this.drawing.setSelectedShape(null);
     }
   }
 
